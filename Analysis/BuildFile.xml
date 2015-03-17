@@ -32,12 +32,11 @@
 <use   name="PhysicsTools/UtilAlgos"/>
 <use   name="PhysicsTools/Utilities"/>
 <use   name="DataFormats/VertexReco"/>
-
 <use   name="SimTracker/VertexAssociation"/>
-
-
 <use name="RecoVertex/PrimaryVertexProducer" />
 <use name="RecoEgamma/EgammaTools" />
+<use name="TauAnalysis/SVfitStandalone"/>
+<use name="EgammaAnalysis/ElectronTools"/>
 
 <flags EDM_PLUGIN="1"/>
 <export>
