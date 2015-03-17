@@ -1,33 +1,22 @@
-// system include_ files
 #include <memory>
 #include <string>
 #include <iostream>
-
-//module definition
 #include "FWCore/PluginManager/interface/ModuleDef.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ESProducer.h"
 #include "FWCore/Framework/interface/ModuleFactory.h"
 #include "FWCore/Utilities/interface/typelookup.h"
 #include "Math/GenVector/VectorUtil.h"
-
-//for HepMC
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
-
-// user include files
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
-//for geometry essource load
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/Ref.h"
-
-
 #include "DataFormats/JetReco/interface/Jet.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
@@ -71,34 +60,23 @@
 #include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaTowerIsolation.h"
 #include "RecoEcal/EgammaClusterProducers/interface/Multi5x5ClusterProducer.h"
 #include "PhysicsTools/SelectorUtils/interface/SimpleCutBasedElectronIDSelectionFunctor.h"
-
-//for ecal isolation
 #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
 #include "DataFormats/CaloTowers/interface/CaloTowerDetId.h"
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
 #include "DataFormats/EcalDetId/interface/EEDetId.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
-
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
-
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
-
-//for trigger results
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
-
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
-
-
-//for muon isolation
 #include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
-//For Hep3Vector
 #include <CLHEP/Vector/LorentzVector.h>
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Common/interface/TriggerResultsByName.h"
@@ -122,16 +100,8 @@
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/PatCandidates/interface/TriggerObject.h"
-
-//metTopology
-
-
-//HLT
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
-
-// PileUp reweighting
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-// Transient tracks
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
@@ -139,17 +109,11 @@
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
-
-// Other specific
 #include "RecoVertex/PrimaryVertexProducer/interface/PrimaryVertexSorter.h"
 #include "DataFormats/GeometryCommonDetAlgo/interface/Measurement1D.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
-
-//Dz parameter
 #include "TrackingTools/PatternTools/interface/TransverseImpactPointExtrapolator.h"
 #include "TrackingTools/TransientTrack/interface/GsfTransientTrack.h"
-
-//Jet ES uncertainty
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "JetMETCorrections/Type1MET/interface/JetCorrExtractorT.h"
@@ -164,8 +128,12 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 
-//#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimatorCSA14.h"
+
+#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimatorCSA14.h"
+#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 
 #include "TMath.h"
 #include "TFile.h"
@@ -194,6 +162,8 @@ private:
     virtual void analyze(const edm::Event&, const edm::EventSetup&);
     virtual void endJob();
 
+    void DoPairWiseMetAnalysis(const edm::Event&);
+    void DoSVAnalysis(const edm::Event&);
     void DoHLTAnalysis(const edm::Event&);
     void DoElectronAnalysis(const edm::Event&, const edm::EventSetup&);
     void DoMuonAnalysis(const edm::Event&, const edm::EventSetup&);
@@ -218,8 +188,8 @@ private:
     edm::EDGetTokenT<edm::TriggerResults> metFiltersToken;
     edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> objectsToken;
     edm::EDGetTokenT<edm::View<reco::GenParticle>> prunedGenToken;
-
-    //EGammaMvaEleEstimatorCSA14* myMVATrig;
+    EGammaMvaEleEstimatorCSA14* myMVATrig;
+    EGammaMvaEleEstimator* myMVANonTrig;
 
     bool Include_HPSTau;
     bool Include_Muon;
@@ -229,6 +199,8 @@ private:
     bool Include_HLT;
     bool Include_Vertex;
     bool Include_GenParticles;
+    bool Include_PairMet;
+    bool Include_SV;
     bool IsMC;
     bool IsEmbedded;
     bool IsEM;

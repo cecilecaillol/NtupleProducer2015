@@ -35,6 +35,7 @@ public:
     bool byLooseCombinedIsolationDeltaBetaCorr3Hits;
     bool byMediumCombinedIsolationDeltaBetaCorr3Hits;
     bool byTightCombinedIsolationDeltaBetaCorr3Hits;
+    bool byVLooseIsolationMVA3oldDMwLT, byLooseIsolationMVA3oldDMwLT, byMediumIsolationMVA3oldDMwLT, byTightIsolationMVA3oldDMwLT, byVTightIsolationMVA3oldDMwLT;
     float byRawCombinedIsolationDeltaBetaCorr3Hits;
     bool discriminationByDecayModeFindingNewDMs;
     bool discriminationByDecayModeFindingOldDMs;

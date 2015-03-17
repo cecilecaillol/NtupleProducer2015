@@ -19,14 +19,14 @@ public:
     float pt, eta, px, py, phi, charge, E, et, pz, z, mass, Energy, mt, absiso, reliso;
     float pfIsoAll, pfIsoCharged, pfIsoNeutral, pfIsoGamma, pfIsoPU;
      int gen_index;
-     float dB, d0, emfraction;
+     float dB, emfraction;
     float DepositR03Ecal, DepositR03Hcal, DepositR03TrackerOfficial;
     bool GlobalMuonPromptTight;
-    bool isLooseMuon, isTightMuon, isSoftMuon, isHighPtMuon;
+    bool isLooseMuon, isTightMuon, isSoftMuon, isHighPtMuon, isMediumMuon;
     bool TMOneStationLoose;
     bool TM2DCompatibilityLoose;
     bool isGlobalMuon, isTrackerMuon, isStandAloneMuon, isPFMuon;
-    int numberOfValidMuonHits, numberOfHits,numMatchStation;
+    int numberOfValidMuonHits, numberOfHits,numMatchStation,numberOfValidPixelHits;
    int normalizedChi2_innTrk, numberOfValidMuonHits_innTrk,  numberOfHits_innTrk;
    float normalizedChi2;
    int trkLayerMeasure , intrkLayerMeasure,  intrkLayerpixel;

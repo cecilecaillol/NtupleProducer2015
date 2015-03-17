@@ -91,6 +91,17 @@
 #pragma link C++ function operator>(const vector<myMET>::iterator&,const vector<myMET>::iterator&); 
 #pragma link C++ function operator-(const vector<myMET>::iterator&,const vector<myMET>::iterator&); 
 #pragma link C++ function operator+(const vector<myMET>::iterator::difference_type,const vector<myMET>::iterator&);
+#pragma link C++ class mySV+;
+#pragma link C++ class vector<mySV>;
+#pragma link C++ class vector<mySV>::iterator;
+#pragma link C++ function operator==(const vector<mySV>::iterator&,const vector<mySV>::iterator&); 
+#pragma link C++ function operator!=(const vector<mySV>::iterator&,const vector<mySV>::iterator&); 
+#pragma link C++ function operator<=(const vector<mySV>::iterator&,const vector<mySV>::iterator&); 
+#pragma link C++ function operator>=(const vector<mySV>::iterator&,const vector<mySV>::iterator&); 
+#pragma link C++ function operator<(const vector<mySV>::iterator&,const vector<mySV>::iterator&); 
+#pragma link C++ function operator>(const vector<mySV>::iterator&,const vector<mySV>::iterator&); 
+#pragma link C++ function operator-(const vector<mySV>::iterator&,const vector<mySV>::iterator&); 
+#pragma link C++ function operator+(const vector<mySV>::iterator::difference_type,const vector<mySV>::iterator&);
 #pragma link C++ class myevent+;
 #endif
 

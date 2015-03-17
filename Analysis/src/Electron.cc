@@ -11,9 +11,10 @@ void NtupleProducer::DoElectronAnalysis(const edm::Event& iEvent, const edm::Eve
 
    edm::Handle<pat::ElectronCollection> electrons;
    iEvent.getByToken(electronCollToken, electrons);
+   int ii=0;
    for (const pat::Electron &el : *electrons) {
       myElectron elo;
-        //elo.gen_index=index;
+        elo.gen_index=ii;
         elo.pt = el.pt();
         elo.eta = el.eta();
         elo.phi = el.phi();
@@ -63,8 +64,29 @@ void NtupleProducer::DoElectronAnalysis(const edm::Event& iEvent, const edm::Eve
 	else{
            elo.ooEmooP = fabs(1.0/el.ecalEnergy() - el.eSuperClusterOverP()/el.ecalEnergy() );
         }
-	//elo.MVAtrigID=myMVATrig->mvaValue(el,false); // doesn't work in CMSSW_7_3_0_pre3
+	elo.MVAtrigID=myMVATrig->mvaValue(el,false); 
+	//elo.MVAnontrigID=myMVANonTrig->mvaValue(el,PV,elo.dz,false);
+	
+	elo.cutID_loose=false;
+	elo.cutID_medium=false;
+	elo.cutID_tight=false;
+	elo.cutID_veto=false;
+	if (elo.passConversionVeto){
+	   if (fabs(elo.eta_SC)<=1.479){
+	      if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.007 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.80 && elo.sigmaIetaIeta<0.01 && elo.hcalOverEcal<0.15 && fabs(elo.dxy)<0.04 && elo.dz<0.2 && fabs(elo.ooEmooP)>-1) elo.cutID_veto=true;
+              if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.007 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.15 && elo.sigmaIetaIeta<0.01 && elo.hcalOverEcal<0.12 && fabs(elo.dxy)<0.02 && elo.dz<0.2 && fabs(elo.ooEmooP)<0.05) elo.cutID_loose=true;
+              if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.004 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.06 && elo.sigmaIetaIeta<0.01 && elo.hcalOverEcal<0.12 && fabs(elo.dxy)<0.02 && elo.dz<0.1 && fabs(elo.ooEmooP)<0.05) elo.cutID_medium=true;
+              if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.004 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.03 && elo.sigmaIetaIeta<0.01 && elo.hcalOverEcal<0.12 && fabs(elo.dxy)<0.02 && elo.dz<0.1 && fabs(elo.ooEmooP)<0.05) elo.cutID_tight=true;
+	   }
+	   else if (fabs(elo.eta_SC)>1.479 && fabs(elo.eta_SC)<2.5){
+              if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.010 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.70 && elo.sigmaIetaIeta<0.03 && elo.hcalOverEcal>-100 && fabs(elo.dxy)<0.04 && elo.dz<0.2 && fabs(elo.ooEmooP)>-1) elo.cutID_veto=true;
+              if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.009 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.10 && elo.sigmaIetaIeta<0.03 && elo.hcalOverEcal<0.10 && fabs(elo.dxy)<0.02 && elo.dz<0.2 && fabs(elo.ooEmooP)<0.05) elo.cutID_loose=true;
+              if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.007 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.03 && elo.sigmaIetaIeta<0.03 && elo.hcalOverEcal<0.10 && fabs(elo.dxy)<0.02 && elo.dz<0.1 && fabs(elo.ooEmooP)<0.05) elo.cutID_medium=true;
+              if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.005 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.02 && elo.sigmaIetaIeta<0.03 && elo.hcalOverEcal<0.10 && fabs(elo.dxy)<0.02 && elo.dz<0.1 && fabs(elo.ooEmooP)<0.05) elo.cutID_tight=true;
+	   }
+	}
         (m->PreSelectedElectrons).push_back(elo);
+	ii++;
    }
 
 

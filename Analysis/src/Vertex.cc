@@ -32,7 +32,7 @@ void NtupleProducer::DoVertexAnalysis(const edm::Event& iEvent) {
         myVertex vo;
         vo.Num_Vertex = vertices->size();
         vo.ndof=vtx->ndof();
-        vo.normalizedChi2=vtx->chi2();//attention
+        vo.normalizedChi2=vtx->chi2();
         vo.px=vtx->x();
         vo.py=vtx->y();
 	vo.pz=vtx->z();

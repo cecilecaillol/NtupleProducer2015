@@ -16,12 +16,13 @@ public:
         ;
     }
 
-    float pt, eta, px, py, phi, E, et, pz, z, mass, dxy, dz, Energy, mt;
+    float pt, eta, px, py, phi, E, pz, z, mass, Energy;
     float vtxMass, vtxNtracks, vtx3DVal, vtx3DSig;
     int partonFlavour, gen_index;
-    bool jetId;
+    bool jetId_Loose, jetId_Medium, jetId_Tight;
     float CSV;
     bool puJetId;
+    float puJetIdraw;
 
     ClassDef(myJet, 1)
 };

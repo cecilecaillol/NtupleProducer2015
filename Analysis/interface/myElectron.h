@@ -16,14 +16,15 @@ public:
         ;
     }
 
-    float pt, eta, px, py, phi, charge, E, et, pz, z, mass, Energy, mt, jetMass, eta_SC, phi_SC, dxy, dz, ecalEnergy, full5x5, absiso, reliso;
-    float pfIsoAll, pfIsoCharged, pfIsoNeutral, pfIsoGamma, pfIsoPU;
+    float pt, eta, px, py, phi, charge, E, et, pz, z, mass, Energy, mt, eta_SC, phi_SC, dxy, dz, ecalEnergy, full5x5, absiso, reliso;
+    float pfIsoCharged, pfIsoNeutral, pfIsoGamma, pfIsoPU;
      int gen_index, numLostHitEleInner;
-    float HoverE, deltaPhiSuperClusterTrackAtVtx, deltaEtaSuperClusterTrackAtVtx, sigmaIetaIeta, sigmaEtaEta;
+    float deltaPhiSuperClusterTrackAtVtx, deltaEtaSuperClusterTrackAtVtx, sigmaIetaIeta, sigmaEtaEta;
     float ecalIso, hcalIso, caloIso, hcalOverEcal, SIP, ooEmooP;
     bool passConversionVeto;
     float rawE_SC, preshowerE_SC;
-    float MVAtrigID;
+    float MVAtrigID, MVAnontrigID;
+    bool cutID_loose, cutID_medium, cutID_tight, cutID_veto;
 
     ClassDef(myElectron, 1)
 };

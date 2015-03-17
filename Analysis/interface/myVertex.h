@@ -20,7 +20,7 @@ public:
 
 
 
-    float px, py, pz, z, mass, dz_Ver_match, Energy, mt, jetMass, eta_SC, phi_SC;
+    float px, py, pz;
     float position_Rho;
 
      int tracksSize;

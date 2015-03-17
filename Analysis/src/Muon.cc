@@ -10,8 +10,10 @@ void NtupleProducer::DoMuonAnalysis(const edm::Event& iEvent, const edm::EventSe
 
      edm::Handle<vector<pat::Muon>> muons;
      iEvent.getByToken(muonCollToken, muons);
+     int ii=0;
      for (auto it = muons->cbegin(); it != muons->cend(); ++it) {
 	myMuon muo;
+        muo.gen_index=ii;
 	muo.pt=it->pt();
         muo.px=it->px();
         muo.py=it->py();
@@ -28,14 +30,19 @@ void NtupleProducer::DoMuonAnalysis(const edm::Event& iEvent, const edm::EventSe
         muo.z = it->vz();
 
 	muo.segmentCompatibility=it->segmentCompatibility();
-	//muo.validFraction=it->innerTrack()->validFraction();
+	if (it->innerTrack().isAvailable())
+	   muo.validFraction=it->innerTrack()->validFraction();
 	muo.trkKink=it->combinedQuality().trkKink;
 	muo.chi2LocalPosition=it->combinedQuality().chi2LocalPosition;
-	//muo.normalizedChi2=std::min(it->globalTrack()->normalizedChi2(), 10.99);
-	//muo.numberOfValidMuonHits=(std::min(it->globalTrack()->hitPattern().numberOfValidMuonHits(), (int)39));
-	muo.numMatchStation=(std::min(it->numberOfMatchedStations(), (int)5));
-	//muo.numberOfValidPixelHits=(std::min(it->innerTrack()->hitPattern().numberOfValidPixelHits(), (int)5));//FIXME
-	//muo.intrkLayerMeasure=(std::min(it->innerTrack()->hitPattern().trackerLayersWithMeasurement(), (int)14));
+	if( it->globalTrack().isAvailable() ){
+	   muo.numberOfValidMuonHits=it->globalTrack()->hitPattern().numberOfValidMuonHits();
+	   muo.normalizedChi2=it->globalTrack()->normalizedChi2();
+	}
+	muo.numMatchStation=it->numberOfMatchedStations();
+	if( it->innerTrack().isAvailable() ){
+	   muo.numberOfValidPixelHits=it->innerTrack()->hitPattern().numberOfValidPixelHits();
+	   muo.intrkLayerMeasure=it->innerTrack()->hitPattern().trackerLayersWithMeasurement();
+	}
 	if (it->isIsolationValid())
 	{
 	   reco::MuonPFIsolation pfR04 = it->pfIsolationR04();
@@ -47,15 +54,27 @@ void NtupleProducer::DoMuonAnalysis(const edm::Event& iEvent, const edm::EventSe
 	   muo.reliso=muo.absiso/it->pt();
 	}
 	muo.isLooseMuon=it->isLooseMuon();
+	bool isMediumID=false;
+	if (!it->isLooseMuon()) isMediumID=false;
+	else{
+            bool goodGlb = true;
+	    if(it->globalTrack().isAvailable() && it->innerTrack().isAvailable()){
+		goodGlb=it->isGlobalMuon() and it->globalTrack()->normalizedChi2() < 3 and it->combinedQuality().chi2LocalPosition < 12 and it->combinedQuality().trkKink < 20;
+	    }
+            if (it->innerTrack()->validFraction() >= 0.8 and ((it->segmentCompatibility() >= 0.303 && goodGlb) or (it->segmentCompatibility() >= 0.451 && !goodGlb))) isMediumID=false;
+	    
+	}
+	muo.isMediumMuon=isMediumID;
 	muo.isTightMuon=it->isTightMuon(PV);
-	muo.isSoftMuon = it->isSoftMuon();
-	muo.isHighPtMuon = it-> isHighPtMuon();
+	muo.isSoftMuon = it->isSoftMuon(PV);
+	muo.isHighPtMuon = it-> isHighPtMuon(PV);
         muo.isTrackerMuon = it->isTrackerMuon();
         muo.isStandAloneMuon = it->isStandAloneMuon();
 	muo.isPFMuon = it->isPFMuon();
 	muo.dz=it->muonBestTrack()->dz(PV.position());
 	muo.dxy=it->muonBestTrack()->dxy(PV.position());
         (m->PreSelectedMuons).push_back(muo);
+	ii++;
      }
 
 

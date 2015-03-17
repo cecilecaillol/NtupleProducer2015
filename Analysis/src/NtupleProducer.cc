@@ -33,8 +33,8 @@ NtupleProducer::NtupleProducer(const edm::ParameterSet& iConfig) {
     edm::InputTag theMETFiltersLabel("TriggerResults","","PAT");
     edm::InputTag theObjectsLabel("selectedPatTrigger");
     edm::InputTag theGenLabel("prunedGenParticles");
-    //edm::InputTag thePATElectronLabel("slimmedElectrons","","PAT");
-    //edm::InputTag theMVAIdLabel("mvaTrigV050nsCSA14","","addMVAid");
+    edm::InputTag thePATElectronLabel("slimmedElectrons","","PAT");
+    edm::InputTag theMVAIdLabel("mvaTrigV050nsCSA14","","addMVAid");
 
     muonCollToken = consumes<pat::MuonCollection>(theMuonLabel);
     electronCollToken = consumes<pat::ElectronCollection>(theElectronLabel);
@@ -49,7 +49,7 @@ NtupleProducer::NtupleProducer(const edm::ParameterSet& iConfig) {
     prunedGenToken=consumes<edm::View<reco::GenParticle>>(theGenLabel);
 
 ///////////////////////////////////////////////////////////////////////////
-/*    std::vector<std::string> myManualCatWeigths;
+    std::vector<std::string> myManualCatWeigths;
     myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EB_BDT.weights.xml");
     myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EE_BDT.weights.xml");
     
@@ -61,7 +61,24 @@ NtupleProducer::NtupleProducer(const edm::ParameterSet& iConfig) {
     }
     
     myMVATrig = new EGammaMvaEleEstimatorCSA14();
-    myMVATrig->initialize("BDT", EGammaMvaEleEstimatorCSA14::kTrig, true, myManualCatWeigthsTrig);*/
+    myMVATrig->initialize("BDT", EGammaMvaEleEstimatorCSA14::kTrig, true, myManualCatWeigthsTrig);
+
+    std::vector<std::string> myManualCatWeigthsNT;
+    myManualCatWeigthsNT.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_5_oldscenario2phys14_BDT.weights.xml");
+    myManualCatWeigthsNT.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_5_oldscenario2phys14_BDT.weights.xml");
+    myManualCatWeigthsNT.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_5_oldscenario2phys14_BDT.weights.xml");
+    myManualCatWeigthsNT.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_10_oldscenario2phys14_BDT.weights.xml");
+    myManualCatWeigthsNT.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_10_oldscenario2phys14_BDT.weights.xml");
+    myManualCatWeigthsNT.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_10_oldscenario2phys14_BDT.weights.xml");
+    vector<string> myManualCatWeigthsNonTrig;
+    string the_pathNT;
+    for (unsigned i  = 0 ; i < myManualCatWeigthsNT.size() ; i++){
+        the_pathNT = edm::FileInPath ( myManualCatWeigthsNT[i] ).fullPath();
+        myManualCatWeigthsNonTrig.push_back(the_pathNT);
+    }
+
+    myMVANonTrig = new EGammaMvaEleEstimator();
+    //myMVANonTrig->initialize("BDT", EGammaMvaEleEstimator::kNonTrig, true, myManualCatWeigthsNonTrig);
 ////////////////////////////////////////////////////////////////////////////
 
     fOutputFileName = iConfig.getUntrackedParameter<string > ("HistOutFile");
@@ -74,6 +91,8 @@ NtupleProducer::NtupleProducer(const edm::ParameterSet& iConfig) {
     Include_Jet = iConfig.getParameter<bool>("Include_Jet");
     Include_MET = iConfig.getParameter<bool>("Include_MET");
     Include_HLT = iConfig.getParameter<bool>("Include_HLT");
+    Include_PairMet = iConfig.getParameter<bool>("Include_PairMet");
+    Include_SV = iConfig.getParameter<bool>("Include_SV");
     IsMC = iConfig.getParameter<bool>("Is_MC");
     IsEmbedded = iConfig.getParameter<bool>("Is_Embedded");
     IsMT = iConfig.getParameter<bool>("Is_MT");
@@ -102,6 +121,8 @@ NtupleProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if (Include_Jet) DoJetAnalysis(iEvent);
     if (Include_MET) DoMetAnalysis(iEvent);
     if (Include_HLT) DoHLTAnalysis(iEvent);
+    if (Include_PairMet) DoPairWiseMetAnalysis(iEvent);
+    if (Include_SV) DoSVAnalysis(iEvent);
 
     t->Fill();
 

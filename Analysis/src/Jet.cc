@@ -4,7 +4,7 @@
 
 void NtupleProducer::DoJetAnalysis(const edm::Event& iEvent) {
 
-     (m->RecPFJetsAK5).clear();
+     (m->PreselectedJets).clear();
 
      edm::Handle<vector<pat::Jet>> jets;
      iEvent.getByToken(jetCollToken, jets);
@@ -20,35 +20,36 @@ void NtupleProducer::DoJetAnalysis(const edm::Event& iEvent) {
         myjet.E = it->p();
         myjet.Energy = it->energy();
         myjet.mass = it->mass();
-        myjet.mt = it->mt();
-        myjet.et = it->et();
 
 	myjet.CSV = it->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
         myjet.partonFlavour=it->partonFlavour();
- 	myjet.puJetId = it->userFloat("pileupJetId:fullDiscriminant");
+ 	myjet.puJetIdraw = it->userFloat("pileupJetId:fullDiscriminant");
+	myjet.puJetId=false;
+	if (fabs(it->eta())>=0 && fabs(it->eta()<2.5 && myjet.puJetIdraw>-0.63)) myjet.puJetId=true;
+	else if (fabs(it->eta())>=2.5 && fabs(it->eta()<2.75 && myjet.puJetIdraw>-0.60)) myjet.puJetId=true;
+	else if (fabs(it->eta())>=2.75 && fabs(it->eta()<3.0 && myjet.puJetIdraw>-0.55)) myjet.puJetId=true;
+	else if (fabs(it->eta())>=3.0 && fabs(it->eta()<5.2 && myjet.puJetIdraw>-0.45)) myjet.puJetId=true;
 	myjet.vtxMass = it->userFloat("vtxMass");
 	myjet.vtxNtracks = it->userFloat("vtxNtracks");
 	myjet.vtx3DVal = it->userFloat("vtx3DVal");
 	myjet.vtx3DSig = it->userFloat("vtx3DSig");
 
-        (m->RecPFJetsAK5).push_back(myjet);
+	float chf = it->chargedHadronEnergy()/it->energy();
+        float nhf = it->neutralHadronEnergy()/it->energy();
+        float phf = it->neutralEmEnergy()/it->energy();
+        float elf = it->chargedEmEnergy()/it->energy();
+        float chm = it->chargedHadronMultiplicity();
+        float npr = it->chargedMultiplicity() + it->neutralMultiplicity();
+
+	myjet.jetId_Loose=(npr>1 and phf<0.99 and nhf<0.99) and (it->eta()>2.4 or (elf<0.99 and chf>0 and chm>0));
+	myjet.jetId_Medium=(npr>1 and phf<0.95 and nhf<0.95) and (it->eta()>2.4 or (elf<0.99 and chf>0 and chm>0));
+        myjet.jetId_Tight=(npr>1 and phf<0.90 and nhf<0.90) and (it->eta()>2.4 or (elf<0.99 and chf>0 and chm>0));
+
+        (m->PreselectedJets).push_back(myjet);
      }
 
 /* //////////////// Other variables in Run1 ntuplizer ////////////////////////
  
-        PFJetIDSelectionFunctor jetIDLoose(PFJetIDSelectionFunctor::FIRSTDATA, PFJetIDSelectionFunctor::LOOSE);
-        PFJetIDSelectionFunctor jetIDTight(PFJetIDSelectionFunctor::FIRSTDATA, PFJetIDSelectionFunctor::TIGHT);
-
-        myjet.jetId_loose = jetIDLoose(*jet, ret_loose);
-        myjet.jetId_tight = jetIDTight(*jet, ret_tight);
-
-        myjet.bDiscriminatiors_JP = jet->bDiscriminator("jetProbabilityBJetTags");
-        myjet.bDiscriminatiors_TCHPT = jet->bDiscriminator("trackCountingHighPurBJetTags");
-
-	myjet.puJetIdLoose= PileupJetIdentifier2::passJetId( idflag, PileupJetIdentifier2::kLoose );
-	myjet.puJetIdMedium = PileupJetIdentifier2::passJetId( idflag, PileupJetIdentifier2::kMedium );
-	myjet.puJetIdTight = PileupJetIdentifier2::passJetId( idflag, PileupJetIdentifier2::kTight );
-
 + Add jet variations?
 
 */
