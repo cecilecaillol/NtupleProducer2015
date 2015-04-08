@@ -23,6 +23,10 @@ doPairMet=True
 doSV=True
 HLTProcessName="HLT"
 
+process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck", 
+			ignoreTotal = cms.untracked.int32(1) # default is one 
+		)
+
 process.ntupler = cms.EDAnalyzer('NtupleProducer',
                                     #OutPut Filles (NTuples)
                                     HistOutFile=cms.untracked.string('output_Ntuples.root'),
@@ -49,17 +53,17 @@ process.ntupler = cms.EDAnalyzer('NtupleProducer',
 
 process.skimmedPatElectrons = cms.EDFilter("PATElectronSelector",
     src = cms.InputTag("slimmedElectrons"),
-    cut = cms.string("pt > 12 && abs(eta) < 2.5")
+    cut = cms.string("abs(eta) < 2.5")
 )
 
 process.skimmedPatMuons = cms.EDFilter("PATMuonSelector",
     src = cms.InputTag("slimmedMuons"),
-    cut = cms.string("pt > 9 && abs(eta) < 2.5")
+    cut = cms.string("abs(eta) < 2.5")
 )
 
 process.skimmedPatTaus = cms.EDFilter("PATTauSelector",
     src = cms.InputTag("slimmedTaus"),
-    cut = cms.string('pt > 19 && abs(eta) < 2.5 &&  tauID("decayModeFinding") > 0.5 && (tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < 4.0 || tauID("byVLooseIsolationMVA3oldDMwLT") > 0.5)')
+    cut = cms.string('pt > 19 && abs(eta) < 2.5 &&  tauID("decayModeFinding") > 0.5 && tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < 4.0')
 )
 
 process.skimmedCorrPatTaus = cms.EDProducer('ScaleTauProducer',
