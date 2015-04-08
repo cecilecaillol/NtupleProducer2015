@@ -22,6 +22,10 @@ void NtupleProducer::DoSVAnalysis(const edm::Event& iEvent) {
 	   iEvent.getByLabel(theSVLabel,  sv);
            mySV SVmass;
 	   SVmass.mass =  (*sv)[0];
+           SVmass.pt =  (*sv)[1];
+           SVmass.eta =  (*sv)[2];
+           SVmass.phi =  (*sv)[3];
+           SVmass.met =  (*sv)[4];
 	   (m->SV_emu).push_back(SVmass);
 	}
     }
@@ -35,6 +39,10 @@ void NtupleProducer::DoSVAnalysis(const edm::Event& iEvent) {
            iEvent.getByLabel(theSVLabel,  sv);
            mySV SVmass;
 	   SVmass.mass =  (*sv)[0];
+           SVmass.pt =  (*sv)[1];
+           SVmass.eta =  (*sv)[2];
+           SVmass.phi =  (*sv)[3];
+           SVmass.met =  (*sv)[4];
            (m->SV_etau).push_back(SVmass);
         }
     }
@@ -48,6 +56,10 @@ void NtupleProducer::DoSVAnalysis(const edm::Event& iEvent) {
            iEvent.getByLabel(theSVLabel,  sv);
            mySV SVmass;
 	   SVmass.mass =  (*sv)[0];
+           SVmass.pt =  (*sv)[1];
+           SVmass.eta =  (*sv)[2];
+           SVmass.phi =  (*sv)[3];
+           SVmass.met =  (*sv)[4];
            (m->SV_mutau).push_back(SVmass);
         }
     }
@@ -61,9 +73,14 @@ void NtupleProducer::DoSVAnalysis(const edm::Event& iEvent) {
            iEvent.getByLabel(theSVLabel,  sv);
            mySV SVmass;
 	   SVmass.mass =  (*sv)[0];
+           SVmass.pt =  (*sv)[1];
+           SVmass.eta =  (*sv)[2];
+           SVmass.phi =  (*sv)[3];
+           SVmass.met =  (*sv)[4];
            (m->SV_tautau).push_back(SVmass);
         }
     }
   }
 }
+
 

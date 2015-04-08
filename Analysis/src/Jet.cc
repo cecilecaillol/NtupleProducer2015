@@ -16,7 +16,6 @@ void NtupleProducer::DoJetAnalysis(const edm::Event& iEvent) {
         myjet.px = it->px();
         myjet.py = it->py();
         myjet.pz = it->pz();
-        myjet.z = it->vz();
         myjet.E = it->p();
         myjet.Energy = it->energy();
         myjet.mass = it->mass();
@@ -25,10 +24,10 @@ void NtupleProducer::DoJetAnalysis(const edm::Event& iEvent) {
         myjet.partonFlavour=it->partonFlavour();
  	myjet.puJetIdraw = it->userFloat("pileupJetId:fullDiscriminant");
 	myjet.puJetId=false;
-	if (fabs(it->eta())>=0 && fabs(it->eta()<2.5 && myjet.puJetIdraw>-0.63)) myjet.puJetId=true;
-	else if (fabs(it->eta())>=2.5 && fabs(it->eta()<2.75 && myjet.puJetIdraw>-0.60)) myjet.puJetId=true;
-	else if (fabs(it->eta())>=2.75 && fabs(it->eta()<3.0 && myjet.puJetIdraw>-0.55)) myjet.puJetId=true;
-	else if (fabs(it->eta())>=3.0 && fabs(it->eta()<5.2 && myjet.puJetIdraw>-0.45)) myjet.puJetId=true;
+	if (fabs(it->eta())>=0 && fabs(it->eta())<2.5 && myjet.puJetIdraw>-0.63) myjet.puJetId=true;
+	else if (fabs(it->eta())>=2.5 && fabs(it->eta())<2.75 && myjet.puJetIdraw>-0.60) myjet.puJetId=true;
+	else if (fabs(it->eta())>=2.75 && fabs(it->eta())<3.0 && myjet.puJetIdraw>-0.55) myjet.puJetId=true;
+	else if (fabs(it->eta())>=3.0 && fabs(it->eta())<5.2 && myjet.puJetIdraw>-0.45) myjet.puJetId=true;
 	myjet.vtxMass = it->userFloat("vtxMass");
 	myjet.vtxNtracks = it->userFloat("vtxNtracks");
 	myjet.vtx3DVal = it->userFloat("vtx3DVal");

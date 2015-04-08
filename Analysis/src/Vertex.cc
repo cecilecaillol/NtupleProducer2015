@@ -21,10 +21,17 @@ void NtupleProducer::DoVertexAnalysis(const edm::Event& iEvent) {
         }
      }
 
+     edm::Handle<LHEEventProduct > LHEHandle;
+     const LHEEventProduct* LHE = 0;
+     iEvent.getByLabel("source",LHEHandle);
+     if(LHEHandle.isValid())
+ 	LHE = LHEHandle.product();
+     m->NUP=(LHE->hepeup()).NUP;
+
      edm::Handle<reco::VertexCollection> vertices;
      iEvent.getByToken(vtxToken, vertices);
      if (vertices->empty()) return; // skip the event if no PV found
-     const reco::Vertex &pv = vertices->front();
+     //const reco::Vertex &PV = vertices->front();
      VertexCollection::const_iterator firstGoodVertex = vertices->end();
      int firstGoodVertexIdx = 0;
      for (VertexCollection::const_iterator vtx = vertices->begin();
@@ -38,6 +45,9 @@ void NtupleProducer::DoVertexAnalysis(const edm::Event& iEvent) {
 	vo.pz=vtx->z();
         vo.position_Rho=vtx->position().Rho();
         vo.tracksSize = vtx->tracksSize();
+	if (firstGoodVertexIdx==0){
+           m->Rho=vtx->position().Rho();
+	}
         (m->Vertex).push_back(vo);
         /*if ( !(vtx->chi2()==0 && vtx->ndof()==0) && vtx->ndof()>=4. && vtx->position().Rho()<=2.0 && fabs(vtx->position().Z())<=24.0) {
               firstGoodVertex = vtx;

@@ -12,6 +12,7 @@ void NtupleProducer::DoElectronAnalysis(const edm::Event& iEvent, const edm::Eve
    edm::Handle<pat::ElectronCollection> electrons;
    iEvent.getByToken(electronCollToken, electrons);
    int ii=0;
+
    for (const pat::Electron &el : *electrons) {
       myElectron elo;
         elo.gen_index=ii;
@@ -50,7 +51,8 @@ void NtupleProducer::DoElectronAnalysis(const edm::Event& iEvent, const edm::Eve
 	elo.pfIsoPU = ( pfIso.sumPUPt );
 	elo.absiso = pfIso.sumChargedHadronPt + max(0.0 , pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - 0.5 * pfIso.sumPUPt );
         elo.reliso=elo.absiso/el.pt();
-        //elo.numLostHitEleInner = el.gsfTrack().trackerExpectedHitsInner().numberOfLostHits(); 
+        //elo.numLostHitEleInner = el.gsfTrack()->trackerExpectedHitsInner()->numberOfLostHits(); 
+        //elo.numLostHitEleInner = el.gsfTrack().hitPattern().numberOfHits(1);
         elo.full5x5=el.full5x5_sigmaIetaIeta();
         elo.passConversionVeto=el.passConversionVeto();
         elo.dz=el.gsfTrack()->dz(PV.position());
@@ -65,8 +67,12 @@ void NtupleProducer::DoElectronAnalysis(const edm::Event& iEvent, const edm::Eve
            elo.ooEmooP = fabs(1.0/el.ecalEnergy() - el.eSuperClusterOverP()/el.ecalEnergy() );
         }
 	elo.MVAtrigID=myMVATrig->mvaValue(el,false); 
-	//elo.MVAnontrigID=myMVANonTrig->mvaValue(el,PV,elo.dz,false);
-	
+	elo.MVAnontrigID=myMVANonTrig->mvaValue(el,false);
+	elo.MVAID_nontrig_Loose=false;
+	elo.MVAID_nontrig_Tight=false;
+	if ((fabs(elo.eta_SC)<0.8 && elo.MVAnontrigID>0.35) or (fabs(elo.eta_SC)>=0.8 && fabs(elo.eta_SC)<1.479 && elo.MVAnontrigID>0.20) or (fabs(elo.eta_SC)>=1.479 && elo.MVAnontrigID>-0.52)) elo.MVAID_nontrig_Loose=true;
+	if ((fabs(elo.eta_SC)<0.8 && elo.MVAnontrigID>0.73) or (fabs(elo.eta_SC)>=0.8 && fabs(elo.eta_SC)<1.479 && elo.MVAnontrigID>0.57) or (fabs(elo.eta_SC)>=1.479 && elo.MVAnontrigID>0.05)) elo.MVAID_nontrig_Tight=true;
+
 	elo.cutID_loose=false;
 	elo.cutID_medium=false;
 	elo.cutID_tight=false;
@@ -85,6 +91,11 @@ void NtupleProducer::DoElectronAnalysis(const edm::Event& iEvent, const edm::Eve
               if (fabs(elo.deltaEtaSuperClusterTrackAtVtx)<0.005 && fabs(elo.deltaPhiSuperClusterTrackAtVtx)<0.02 && elo.sigmaIetaIeta<0.03 && elo.hcalOverEcal<0.10 && fabs(elo.dxy)<0.02 && elo.dz<0.1 && fabs(elo.ooEmooP)<0.05) elo.cutID_tight=true;
 	   }
 	}
+
+        float IP      = fabs(el.dB(pat::Electron::PV3D));
+        float IPError = el.edB(pat::Electron::PV3D);
+        elo.SIP     = IP/IPError;
+	elo.numLostHitEleInner=el.gsfTrack()->hitPattern().numberOfHits(HitPattern::MISSING_INNER_HITS);
         (m->PreSelectedElectrons).push_back(elo);
 	ii++;
    }

@@ -77,8 +77,8 @@ NtupleProducer::NtupleProducer(const edm::ParameterSet& iConfig) {
         myManualCatWeigthsNonTrig.push_back(the_pathNT);
     }
 
-    myMVANonTrig = new EGammaMvaEleEstimator();
-    //myMVANonTrig->initialize("BDT", EGammaMvaEleEstimator::kNonTrig, true, myManualCatWeigthsNonTrig);
+    myMVANonTrig = new EGammaMvaEleEstimatorCSA14();
+    myMVANonTrig->initialize("BDT", EGammaMvaEleEstimatorCSA14::kNonTrigPhys14, true, myManualCatWeigthsNonTrig);
 ////////////////////////////////////////////////////////////////////////////
 
     fOutputFileName = iConfig.getUntrackedParameter<string > ("HistOutFile");

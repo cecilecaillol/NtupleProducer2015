@@ -30,8 +30,9 @@ void NtupleProducer::DoMuonAnalysis(const edm::Event& iEvent, const edm::EventSe
         muo.z = it->vz();
 
 	muo.segmentCompatibility=it->segmentCompatibility();
-	if (it->innerTrack().isAvailable())
+	if (it->innerTrack().isAvailable()){
 	   muo.validFraction=it->innerTrack()->validFraction();
+	}
 	muo.trkKink=it->combinedQuality().trkKink;
 	muo.chi2LocalPosition=it->combinedQuality().chi2LocalPosition;
 	if( it->globalTrack().isAvailable() ){
@@ -61,7 +62,7 @@ void NtupleProducer::DoMuonAnalysis(const edm::Event& iEvent, const edm::EventSe
 	    if(it->globalTrack().isAvailable() && it->innerTrack().isAvailable()){
 		goodGlb=it->isGlobalMuon() and it->globalTrack()->normalizedChi2() < 3 and it->combinedQuality().chi2LocalPosition < 12 and it->combinedQuality().trkKink < 20;
 	    }
-            if (it->innerTrack()->validFraction() >= 0.8 and ((it->segmentCompatibility() >= 0.303 && goodGlb) or (it->segmentCompatibility() >= 0.451 && !goodGlb))) isMediumID=false;
+            if (it->innerTrack()->validFraction() >= 0.8 and ((it->segmentCompatibility() >= 0.303 && goodGlb) or (it->segmentCompatibility() >= 0.451 && !goodGlb))) isMediumID=true;
 	    
 	}
 	muo.isMediumMuon=isMediumID;

@@ -64,16 +64,13 @@ void NtupleProducer::DoHPSTauAnalysis(const edm::Event& iEvent, const edm::Event
         tau.numParticlesIsoCone = it->isolationPFCands().size();
 
 	tau.leadChargedParticlePt=it->leadCand()->pt();
-	//tau.leadChargedParticlePdgID=it->leadCand().pdgId();//FIXME
-	//tau.dxy_Sig()
-        tau.mva_e_pi = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->mva_e_pi() : 0.);
-        tau.mva_pi_mu = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->mva_pi_mu() : 0.);
-        tau.mva_e_mu = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->mva_e_mu() : 0.);
-        tau.hcalEnergy = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->hcalEnergy() : 0.);
-        tau.ecalEnergy = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->ecalEnergy() : 0.);
         tau.trackRefPt = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->pt() : 0.);
 
         tau.decayMode = it->decayMode();
+        tau.dxy=it->dxy();
+        tau.dz=(PV.z()-it->vertex().z()) - ((PV.x()-it->vertex().x())*it->p4().x()+(PV.y()-it->vertex().y())*it->p4().y())/ it->p4().pt() *  it->p4().z()/ it->p4().pt();
+        tau.zImpact=it->vertex().z() + 130./tan(it->theta());
+        tau.isFirstVtx=(PV.z()==it->vertex().z());
 	ii++;
 	(m->PreSelectedTaus).push_back(tau);
     }
@@ -111,22 +108,21 @@ void NtupleProducer::DoHPSTauAnalysis(const edm::Event& iEvent, const edm::Event
         tau.IsolationPUcorrPtSum = it->tauID("puCorrPtSum");
         tau.discriminationByDecayModeFindingNewDMs = it->tauID("decayModeFindingNewDMs") > 0.5 ? true : false;
         tau.discriminationByDecayModeFinding = it->tauID("decayModeFinding") > 0.5 ? true : false;
-        tau.numChargedParticlesSignalCone = it->signalPFChargedHadrCands().size();
-        tau.numNeutralHadronsSignalCone = it->signalPFNeutrHadrCands().size();
-        tau.numPhotonsSignalCone = it->signalPFGammaCands().size();
-        tau.numParticlesSignalCone = it->signalPFCands().size();
-        tau.numChargedParticlesIsoCone = it->isolationPFChargedHadrCands().size();
-        tau.numNeutralHadronsIsoCone = it->isolationPFNeutrHadrCands().size();
-        tau.numPhotonsIsoCone = it->isolationPFGammaCands().size();
-        tau.numParticlesIsoCone = it->isolationPFCands().size();
+        tau.numChargedParticlesSignalCone = it->signalChargedHadrCands().size();
+        tau.numNeutralHadronsSignalCone = it->signalNeutrHadrCands().size();
+        tau.numPhotonsSignalCone = it->signalGammaCands().size();
+        tau.numParticlesSignalCone = it->signalCands().size();
+        tau.numChargedParticlesIsoCone = it->isolationChargedHadrCands().size();
+        tau.numNeutralHadronsIsoCone = it->isolationNeutrHadrCands().size();
+        tau.numPhotonsIsoCone = it->isolationGammaCands().size();
+        tau.numParticlesIsoCone = it->isolationCands().size();
         tau.leadChargedParticlePt=it->leadCand()->pt();
-        tau.mva_e_pi = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->mva_e_pi() : 0.);
-        tau.mva_pi_mu = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->mva_pi_mu() : 0.);
-        tau.mva_e_mu = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->mva_e_mu() : 0.);
-        tau.hcalEnergy = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->hcalEnergy() : 0.);
-        tau.ecalEnergy = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->ecalEnergy() : 0.);
-        tau.trackRefPt = (it->leadPFChargedHadrCand().isNonnull() ? it->leadPFChargedHadrCand()->pt() : 0.);
+        tau.trackRefPt = (it->leadChargedHadrCand().isNonnull() ? it->leadChargedHadrCand()->pt() : 0.);
         tau.decayMode = it->decayMode();
+	tau.dxy=it->dxy();
+        tau.dz=(PV.z()-it->vertex().z()) - ((PV.x()-it->vertex().x())*it->p4().x()+(PV.y()-it->vertex().y())*it->p4().y())/ it->p4().pt() *  it->p4().z()/ it->p4().pt();
+	tau.zImpact=it->vertex().z() + 130./tan(it->theta());
+	tau.isFirstVtx=(PV.z()==it->vertex().z());
         (m->LooseTaus).push_back(tau);
     }
 /* //////////// Other variables in Run 1 ntuplizer //////////////////

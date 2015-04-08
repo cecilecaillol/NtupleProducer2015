@@ -17,8 +17,8 @@ void NtupleProducer::DoGenParticlesAnalysis(const edm::Event& iEvent) {
         gen.z = particle->vz();
         gen.mass = particle->mass();
         gen.px = particle->px();
-        gen.px = particle->px();
-        gen.px = particle->px();
+        gen.py = particle->py();
+        gen.pz = particle->pz();
         gen.E = particle->p();
         gen.Energy = particle->energy();
 
