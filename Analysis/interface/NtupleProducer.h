@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include "FWCore/PluginManager/interface/ModuleDef.h"
+#include <DataFormats/Common/interface/MergeableCounter.h>
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ESProducer.h"
 #include "FWCore/Framework/interface/ModuleFactory.h"
@@ -162,6 +163,7 @@ private:
     virtual void beginJob();
     virtual void analyze(const edm::Event&, const edm::EventSetup&);
     virtual void endJob();
+    virtual void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&);
 
     void DoPairWiseMetAnalysis(const edm::Event&);
     void DoSVAnalysis(const edm::Event&);
@@ -208,8 +210,11 @@ private:
     bool IsMT;
     bool IsET;
     bool IsTT;
+    int Nevt_Gen;
+    int Nevt_PassTrigger;
     
     myevent *m; // for root tree definition
     TTree *t;
     TFile* hOutputFile;
+    TH1F *hCounter;
 };
