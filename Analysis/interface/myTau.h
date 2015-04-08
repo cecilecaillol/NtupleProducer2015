@@ -18,11 +18,11 @@ public:
 
     float pt, eta, px, py, phi, charge, E, et, pz, z, mass, dz_Ver_match, Energy, mt, jetMass, eta_SC, phi_SC;
      int gen_index;
-    float dxy, dz;
+    float dxy, dz, zImpact;
+    bool isFirstVtx;
     int decayMode;
-    float jetPt, jetEta, jetPhi;
-    float leadChargedParticlePt, leadTrackD0;
-    float mva_e_pi, mva_pi_mu, mva_e_mu, hcalEnergy, ecalEnergy, trackRefPt;
+    float leadChargedParticlePt;
+    float trackRefPt;
     int numChargedParticlesSignalCone, numNeutralHadronsSignalCone, numPhotonsSignalCone, numParticlesSignalCone, signalPiZeroCandidates;
     int numChargedParticlesIsoCone, numNeutralHadronsIsoCone, numPhotonsIsoCone, numParticlesIsoCone;
     float ptSumChargedParticlesIsoCone, ptSumPhotonsIsoCone;

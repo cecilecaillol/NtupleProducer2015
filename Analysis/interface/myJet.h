@@ -16,9 +16,9 @@ public:
         ;
     }
 
-    float pt, eta, px, py, phi, E, pz, z, mass, Energy;
+    float pt, eta, px, py, phi, E, pz, mass, Energy;
     float vtxMass, vtxNtracks, vtx3DVal, vtx3DSig;
-    int partonFlavour, gen_index;
+    int partonFlavour;
     bool jetId_Loose, jetId_Medium, jetId_Tight;
     float CSV;
     bool puJetId;

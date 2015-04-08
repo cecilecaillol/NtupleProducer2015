@@ -74,11 +74,8 @@ public:
     float PUInfo;
     float PUInfo_true;
     int PUInfo_Bunch0;
-    float RhoCorr;
-    float RhoCenNeutral;
-    float RhoCenCharged;
-    float RhoCenNeutralTight;
     float Rho;
+    int NUP;
 
 private:
 

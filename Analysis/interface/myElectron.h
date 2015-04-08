@@ -24,7 +24,7 @@ public:
     bool passConversionVeto;
     float rawE_SC, preshowerE_SC;
     float MVAtrigID, MVAnontrigID;
-    bool cutID_loose, cutID_medium, cutID_tight, cutID_veto;
+    bool cutID_loose, cutID_medium, cutID_tight, cutID_veto, MVAID_nontrig_Loose, MVAID_nontrig_Tight;
 
     ClassDef(myElectron, 1)
 };

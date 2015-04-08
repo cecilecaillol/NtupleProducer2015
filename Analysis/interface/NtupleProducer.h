@@ -131,6 +131,7 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimatorCSA14.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
@@ -189,7 +190,7 @@ private:
     edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> objectsToken;
     edm::EDGetTokenT<edm::View<reco::GenParticle>> prunedGenToken;
     EGammaMvaEleEstimatorCSA14* myMVATrig;
-    EGammaMvaEleEstimator* myMVANonTrig;
+    EGammaMvaEleEstimatorCSA14* myMVANonTrig;
 
     bool Include_HPSTau;
     bool Include_Muon;
