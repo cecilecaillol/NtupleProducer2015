@@ -13,6 +13,28 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 #process.MessageLogger.cerr.FwkReport.reportEvery=cms.untracked.int32(10)
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
+TRIGGERLIST = [#"HLT_*", #["HLT_Mu17_Mu8_v*", "HLT_Mu17_TkMu8_v*"] # to run on DATA/MC 2012 # "HLT_*" is a empty path
+    "HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v1",
+    "HLT_IsoMu17_eta2p1_v1",
+    "HLT_IsoMu17_eta2p1_MediumIsoPFTau40_Trk1_eta2p1_Reg_v1",
+    "HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v1",
+    "HLT_IsoMu24_eta2p1_IterTrk01_v1",
+    "HLT_IsoMu24_eta2p1_IterTrk02_v1",
+    "HLT_IsoMu24_eta2p1_IterTrk02_LooseIsoPFTau20_v1",
+    "HLT_Ele22_eta2p1_WP85_Gsf_LooseIsoPFTau20_v1",
+    "HLT_Ele32_eta2p1_WP85_Gsf_v1",
+    "HLT_Ele32_eta2p1_WP85_Gsf_LooseIsoPFTau20_v1",
+    "HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120_v1",
+    "HLT_IsoMu16_eta2p1_CaloMET30_LooseIsoPFTau50_Trk30_eta2p1_v1",
+    "HLT_IsoMu16_eta2p1_CaloMET30_v1",
+    "HLT_Mu16_eta2p1_CaloMET30_v1",
+    "HLT_LooseIsoPFTau50_Trk30_eta2p1_v1",
+    "HLT_DoubleIsoMu17_eta2p1_v1",
+    "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1",
+    "HLT_Ele27_eta2p1_WP85_Gsf_LooseIsoPFTau20_v1",
+    "HLT_Ele27_eta2p1_WP85_Gsf_v1"]
+
+
 isMC=True
 isEmbedded=False
 isTT=True
@@ -50,6 +72,18 @@ process.ntupler = cms.EDAnalyzer('NtupleProducer',
                                     Is_ET=cms.bool(isET),
 
 )
+
+import HLTrigger.HLTfilters.hltHighLevel_cfi as hlt
+
+process.hltFilter = hlt.hltHighLevel.clone(
+    TriggerResultsTag = cms.InputTag("TriggerResults","","HLT"),
+    HLTPaths = TRIGGERLIST,
+    andOr = cms.bool(True), # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
+    throw = cms.bool(False) #if True: throws exception if a trigger path is invalid  
+)
+
+process.nEventsTotal = cms.EDProducer("EventCountProducer") 
+process.nEventsPassTrigger = cms.EDProducer("EventCountProducer")
 
 process.skimmedPatElectrons = cms.EDFilter("PATElectronSelector",
     src = cms.InputTag("slimmedElectrons"),
@@ -145,6 +179,11 @@ process.puJetIdForPFMVAMEt.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+
+#if isMC:
+#    process.GlobalTag.globaltag = 'PHYS14_25_V1::All' #MC in PHYS14
+#else :
+#    process.GlobalTag.globaltag = 'GR_70_V2_AN1::All'
 
 process.options = cms.untracked.PSet(
     allowUnscheduled = cms.untracked.bool(True)
@@ -397,10 +436,10 @@ for eINDEX in range(9):
        pairWiseSV += SVModule
 
 if doSV and doPairMet:
-   process.p = cms.Path(process.skimmedPatElectrons*process.skimmedPatMuons*process.skimmedPatTaus*process.skimmedCorrPatTaus*singlePatLeptons*pairWiseMvaMETs*pairWiseRecoil*pairWiseSV*process.ntupler)
+   process.p = cms.Path(process.nEventsTotal*process.hltFilter*process.nEventsPassTrigger*process.skimmedPatElectrons*process.skimmedPatMuons*process.skimmedPatTaus*process.skimmedCorrPatTaus*singlePatLeptons*pairWiseMvaMETs*pairWiseRecoil*pairWiseSV*process.ntupler)
 if not doSV and doPairMet:
-   process.p = cms.Path(process.skimmedPatElectrons*process.skimmedPatMuons*process.skimmedPatTaus*process.skimmedCorrPatTaus*singlePatLeptons*pairWiseMvaMETs*pairWiseRecoil*process.ntupler)
+   process.p = cms.Path(process.nEventsTotal*process.hltFilter*process.nEventsPassTrigger*process.skimmedPatElectrons*process.skimmedPatMuons*process.skimmedPatTaus*process.skimmedCorrPatTaus*singlePatLeptons*pairWiseMvaMETs*pairWiseRecoil*process.ntupler)
 if not doSV and not doPairMet:
-   process.p = cms.Path(process.skimmedPatElectrons*process.skimmedPatMuons*process.skimmedPatTaus*process.skimmedCorrPatTaus*process.ntupler)
+   process.p = cms.Path(process.nEventsTotal*process.hltFilter*process.nEventsPassTrigger*process.skimmedPatElectrons*process.skimmedPatMuons*process.skimmedPatTaus*process.skimmedCorrPatTaus*process.ntupler)
 
 
