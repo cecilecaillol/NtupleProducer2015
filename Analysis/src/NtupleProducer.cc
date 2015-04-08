@@ -5,18 +5,21 @@
 void
 NtupleProducer::beginJob() {
     hOutputFile = new TFile(fOutputFileName.c_str(), "RECREATE");
+    hCounter = new TH1F("Counter","Counters",3,0,3);
     t = new TTree("t", "tree");
     m = new myevent;
     t->Branch("myevent", "myevent", &m, 256000, 1);
-
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 
 void
 NtupleProducer::endJob() {
-
+    hCounter->SetBinContent(1,Nevt_Gen);
+    hCounter->SetBinContent(2,Nevt_PassTrigger);
     hOutputFile->Write();
+    hOutputFile->cd();
+    hCounter->Write();
     hOutputFile->Close();
 }
 
@@ -127,6 +130,18 @@ NtupleProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     t->Fill();
 
 }//analyze
+
+void NtupleProducer::endLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iSetup)
+{
+  // Total number of events is the sum of the events in each of these luminosity blocks
+   edm::Handle<edm::MergeableCounter> nEventsTotalCounter;
+   iLumi.getByLabel("nEventsTotal", nEventsTotalCounter);
+   Nevt_Gen += nEventsTotalCounter->value;
+
+   edm::Handle<edm::MergeableCounter> nEventsPassTrigCounter;
+   iLumi.getByLabel("nEventsPassTrigger", nEventsPassTrigCounter);
+   Nevt_PassTrigger += nEventsPassTrigCounter->value;
+}
 
 
 
